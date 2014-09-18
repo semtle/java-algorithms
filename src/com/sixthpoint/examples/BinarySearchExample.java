@@ -16,13 +16,24 @@ public class BinarySearchExample {
     public static void main(String[] args) {
 
         // low is the lowest possible value, high is the highest possible value
-        int find = 1000000, sampleSize = 1000000;
+        int find = 10000000, sampleSize = 10000000, iterations = 50, x = 0, y = 0;
+        long integerTime = 0, arrayListTime = 0;
+        BinarySearchExample bse = new BinarySearchExample();
 
-        // Int array speed test
-        testIntegerArray(find, sampleSize);
+        while (x <= iterations) {
+            // Int array speed test
+            integerTime = integerTime + bse.testIntegerArray(find, sampleSize);
+            x++;
+        }
 
-        // Arraylist speed test
-        testArrayList(find, sampleSize);
+        System.out.println(TimeUnit.MICROSECONDS.convert((integerTime / iterations), TimeUnit.NANOSECONDS));
+
+        while (y <= iterations) {
+            // Arraylist speed test
+            arrayListTime = arrayListTime + bse.testArrayList(find, sampleSize);
+            y++;
+        }
+        System.out.println(TimeUnit.MICROSECONDS.convert((arrayListTime / iterations), TimeUnit.NANOSECONDS));
 
     }
 
@@ -31,8 +42,9 @@ public class BinarySearchExample {
      *
      * @param find
      * @param sampleSize
+     * @return 
      */
-    public static void testIntegerArray(int find, int sampleSize) {
+    public long testIntegerArray(int find, int sampleSize) {
 
         // Now using a int array
         int[] numbers = new int[sampleSize];
@@ -50,22 +62,23 @@ public class BinarySearchExample {
         // Get the end time
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println(TimeUnit.MICROSECONDS.convert(duration, TimeUnit.NANOSECONDS));
 
         if (result >= 0) {
-            System.out.println("The number was found in integer array in position " + result);
+            //System.out.println("The number was found in integer array in position " + result);
         } else {
-            System.out.println("The number " + find + " is not in of the " + numbers.length + " positions of the integer array.");
+            //System.out.println("The number " + find + " is not in of the " + numbers.length + " positions of the integer array.");
         }
+        return duration;
     }
 
     /**
-     * Test the speed of arraylist binary search
+     * Test the speed of arraylist binary sear
+     * @return ch
      *
      * @param find
      * @param sampleSize
      */
-    public static void testArrayList(int find, int sampleSize) {
+    public long testArrayList(int find, int sampleSize) {
 
         ArrayList<Integer> numbers = new ArrayList<>();
         // Fill the array with random integers
@@ -82,13 +95,13 @@ public class BinarySearchExample {
         // Get the end time
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println(TimeUnit.MICROSECONDS.convert(duration, TimeUnit.NANOSECONDS));
 
         if (result >= 0) {
-            System.out.println("The number was found in arrayList position " + result);
+            //System.out.println("The number was found in arrayList position " + result);
         } else {
-            System.out.println("The number " + find + " is not in of the " + numbers.size() + " positions of the arrayList.");
+            //System.out.println("The number " + find + " is not in of the " + numbers.size() + " positions of the arrayList.");
         }
+        return duration;
     }
 
     /**
