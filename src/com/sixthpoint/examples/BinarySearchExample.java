@@ -22,7 +22,7 @@ public class BinarySearchExample {
 
         while (x <= iterations) {
             // Int array speed test
-            integerTime = integerTime + bse.testIntegerArray(find, sampleSize);
+            integerTime += bse.testIntegerArray(find, sampleSize);
             x++;
         }
 
@@ -30,7 +30,7 @@ public class BinarySearchExample {
 
         while (y <= iterations) {
             // Arraylist speed test
-            arrayListTime = arrayListTime + bse.testArrayList(find, sampleSize);
+            arrayListTime += bse.testArrayList(find, sampleSize);
             y++;
         }
         System.out.println(TimeUnit.MICROSECONDS.convert((arrayListTime / iterations), TimeUnit.NANOSECONDS));
@@ -42,7 +42,7 @@ public class BinarySearchExample {
      *
      * @param find
      * @param sampleSize
-     * @return 
+     * @return
      */
     public long testIntegerArray(int find, int sampleSize) {
 
@@ -59,20 +59,19 @@ public class BinarySearchExample {
         // Perform the search
         Integer result = binarySearch(numbers, find);
 
-        // Get the end time
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-
         if (result >= 0) {
             //System.out.println("The number was found in integer array in position " + result);
         } else {
             //System.out.println("The number " + find + " is not in of the " + numbers.length + " positions of the integer array.");
         }
-        return duration;
+
+        // return the end time
+        return (System.nanoTime() - startTime);
     }
 
     /**
      * Test the speed of arraylist binary sear
+     *
      * @return ch
      *
      * @param find
@@ -92,16 +91,14 @@ public class BinarySearchExample {
         // Perform the search
         Integer result = binarySearch(numbers, find);
 
-        // Get the end time
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-
         if (result >= 0) {
             //System.out.println("The number was found in arrayList position " + result);
         } else {
             //System.out.println("The number " + find + " is not in of the " + numbers.size() + " positions of the arrayList.");
         }
-        return duration;
+
+        // Return the end time
+        return (System.nanoTime() - startTime);
     }
 
     /**
