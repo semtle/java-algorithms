@@ -17,7 +17,7 @@ public class QuickSortExample {
     public static void main(String[] args) {
 
         // low is the lowest possible value, high is the highest possible value, size is the number of values to add
-        int low = 0, high = 10000, sampleSize = 100, iterations = 1;
+        int low = 0, high = 100000, sampleSize = 100, iterations = 10;
         int x = 0, y = 0;
         long integerTime = 0, arrayListTime = 0;
         QuickSortExample qse = new QuickSortExample();
@@ -37,15 +37,10 @@ public class QuickSortExample {
         }
 
         System.out.println(TimeUnit.MICROSECONDS.convert((arrayListTime / iterations), TimeUnit.NANOSECONDS));
-
-        // Output the sorted arraylist using lambda's
-//        numbers.stream().forEach((num1) -> {
-//            System.out.println(num1);
-//        });
     }
 
     /**
-     * Overload method for quick sort
+     * Quicksort a arrayList
      *
      * @param sampleSize
      * @param high
@@ -72,7 +67,7 @@ public class QuickSortExample {
     }
 
     /**
-     * Overload method for quick sort
+     * Quicksort a int array
      *
      * @param sampleSize
      * @param high
