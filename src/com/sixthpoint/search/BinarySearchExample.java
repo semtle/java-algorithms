@@ -1,4 +1,4 @@
-package com.sixthpoint.examples;
+package com.sixthpoint.search;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;

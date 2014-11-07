@@ -1,4 +1,4 @@
-package com.sixthpoint.examples;
+package com.sixthpoint.sort;
 
 import java.util.ArrayList;
 import java.util.Random;

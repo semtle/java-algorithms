@@ -1,4 +1,4 @@
-package com.sixthpoint.examples;
+package com.sixthpoint.sort;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,9 +28,9 @@ public class SelectionSortExample {
         selectionSort(numbers);
 
         // Output the sorted arraylist using lambda's
-        numbers.stream().forEach((num1) -> {
-            System.out.println(num1);
-        });
+//        numbers.stream().forEach((num1) -> {
+//            System.out.println(num1);
+//        });
     }
 
     /**
