@@ -1,6 +1,5 @@
 package com.sixthpoint.security;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -8,11 +7,13 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  *
@@ -31,9 +32,60 @@ public class Encryption {
      */
     public static final int PBKDF2_ITERATIONS = 1000;
 
-    /////////////////////////////////////////
-    // ENCODING / DECODING SECTION
-    /////////////////////////////////////////
+    /**
+     * Typical test case to assure that Encoding / Decoding / Encryption work
+     * properly
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        System.out.println("1. Encryption Test");
+
+        String password = "changeit";
+
+        int i = 0;
+        while (i < 1000) {
+
+            try {
+                // Create has in the form of (salt:hash)
+                String hash = createHash(password);
+
+                String[] params = hash.split(":");
+                byte[] salt = fromHex(params[0]);
+                byte[] hash5 = fromHex(params[1]);
+
+                if (validatePassword(password, hash5, salt)) {
+
+                    System.out.println("valid password!");
+                }
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                System.out.println("ERROR: " + ex);
+            }
+
+            i++;
+        }
+
+        System.out.println("2. Encoding / Decoding Test");
+
+        i = 0;
+        while (i < 1000) {
+            try {
+                String originalPassword = "mysecret";
+                System.out.println("Original password: " + originalPassword);
+                String encryptedPassword = encode(originalPassword);
+                System.out.println("Encoded password: " + encryptedPassword);
+                String decryptedPassword = decode(encryptedPassword);
+                System.out.println("Decoded password: " + decryptedPassword);
+
+            } catch (GeneralSecurityException | IOException ex) {
+
+                System.out.println("Encoding / Decoding error: " + ex.getMessage());
+            }
+            i++;
+        }
+    }
+
     /**
      * Takes in a string which is then salted with a given password used for the
      * 2 way encryption
@@ -58,11 +110,11 @@ public class Encryption {
         pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(PBESALT, 20));
 
         // Returns the cipher encoded to a 64bit string (aka base64 encoded). getBytes() forms a new byte array
-        return Base64.encode(pbeCipher.doFinal(data.getBytes("UTF-8")));
+        return DatatypeConverter.printBase64Binary(pbeCipher.doFinal(data.getBytes("UTF-8")));
     }
 
     /**
-     * Takes in encrypted data and uses the salt to decrypt it to its orignal
+     * Takes in encrypted data and uses the salt to decrypt it to its original
      * state
      *
      * @param data
@@ -85,12 +137,9 @@ public class Encryption {
         pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(PBESALT, 20));
 
         // Returns a string of the orignally encrypted data
-        return new String(pbeCipher.doFinal(Base64.decode((data))), "UTF-8");
+        return new String(pbeCipher.doFinal(DatatypeConverter.parseBase64Binary((data))), "UTF-8");
     }
 
-    /////////////////////////////////////////
-    // ENCRYPTION SECTION
-    /////////////////////////////////////////
     /**
      * Validates a password using a hash.
      *
@@ -179,7 +228,7 @@ public class Encryption {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
-        return salt.toString();
+        return Arrays.toString(salt);
     }
 
     /**
@@ -233,60 +282,4 @@ public class Encryption {
         return diff == 0;
     }
 
-    /////////////////////////////////////////
-    // TEST CASE SECTION
-    /////////////////////////////////////////
-    /**
-     * Typical test case to assure that Encoding / Decoding / Encryption work
-     * properly
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        System.out.println("1. Encryption Test");
-
-        String password = "changeit";
-
-        int i = 0;
-        while (i < 1000) {
-
-            try {
-                // Create has in the form of (salt:hash)
-                String hash = createHash(password);
-
-                String[] params = hash.split(":");
-                byte[] salt = fromHex(params[0]);
-                byte[] hash5 = fromHex(params[1]);
-
-                if (validatePassword(password, hash5, salt)) {
-
-                    System.out.println("GOOOD!");
-                }
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                System.out.println("ERROR: " + ex);
-            }
-
-            i++;
-        }
-
-        System.out.println("2. Encoding / Decoding Test");
-
-        i = 0;
-        while (i < 1000) {
-            try {
-                String originalPassword = "mysecret";
-                System.out.println("Original password: " + originalPassword);
-                String encryptedPassword = encode(originalPassword);
-                System.out.println("Encoded password: " + encryptedPassword);
-                String decryptedPassword = decode(encryptedPassword);
-                System.out.println("Decoded password: " + decryptedPassword);
-
-            } catch (GeneralSecurityException | IOException ex) {
-
-                System.out.println("Encoding / Decoding error: " + ex.getMessage());
-            }
-            i++;
-        }
-    }
 }
