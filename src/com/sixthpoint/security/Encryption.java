@@ -21,16 +21,18 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class Encryption {
 
-    // A user chosen password to be used for the PBEKeySpec (This is completely random). Used for encoding / decoding (DO NOT CHANGE)
+    // A user chosen password used for the PEKeySpec. Once set do not change or all previously encoded data will be lost
     private static final char[] PBEKeyPassword = "nviowefjklaasdlkjweklnvq".toCharArray();
 
-    // Private salt for PBE algorithm (randomly changes) for encoding
+    // Private salt for PBE algorithm
     private static final byte[] PBESALT = {(byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12, (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12};
 
-    /**
-     * Used in encryption for how many cycles (DO NOT CHANGE)
-     */
-    public static final int PBKDF2_ITERATIONS = 1000;
+    // Used in encryption for how many cycles
+    private static final int PBKDF2_ITERATIONS = 2000;
+    
+    private static final Integer checkLoops = 10;
+    
+    private static final String password = "changeit";
 
     /**
      * Typical test case to assure that Encoding / Decoding / Encryption work
@@ -40,37 +42,30 @@ public class Encryption {
      */
     public static void main(String[] args) {
 
-        System.out.println("1. Encryption Test");
-
-        String password = "changeit";
-
-        int i = 0;
-        while (i < 1000) {
-
-            try {
+        System.out.println("Encryption Test\n");
+        
+        for (int i = 0; i <= checkLoops; i++) {
+            
+             try {
                 // Create has in the form of (salt:hash)
                 String hash = createHash(password);
-
                 String[] params = hash.split(":");
                 byte[] salt = fromHex(params[0]);
                 byte[] hash5 = fromHex(params[1]);
 
                 if (validatePassword(password, hash5, salt)) {
-
                     System.out.println("valid password!");
                 }
             } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
                 System.out.println("ERROR: " + ex);
             }
-
-            i++;
         }
 
-        System.out.println("2. Encoding / Decoding Test");
+        System.out.println("Encoding / Decoding Test\n");
 
-        i = 0;
-        while (i < 1000) {
-            try {
+        for (int i = 0; i <= checkLoops; i++) {
+            
+             try {
                 String originalPassword = "mysecret";
                 System.out.println("Original password: " + originalPassword);
                 String encryptedPassword = encode(originalPassword);
@@ -79,10 +74,8 @@ public class Encryption {
                 System.out.println("Decoded password: " + decryptedPassword);
 
             } catch (GeneralSecurityException | IOException ex) {
-
                 System.out.println("Encoding / Decoding error: " + ex.getMessage());
-            }
-            i++;
+            }   
         }
     }
 
@@ -224,6 +217,11 @@ public class Encryption {
         return toHex(salt) + ":" + toHex(hash);
     }
 
+    /**
+     *
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
     private static String getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
