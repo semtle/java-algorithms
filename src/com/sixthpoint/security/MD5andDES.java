@@ -13,7 +13,7 @@ import javax.xml.bind.DatatypeConverter;
 /**
  * MD5 based 2 way encryption
  *
- * @author Brandon
+ * @author sixthpoint
  */
 public class MD5andDES {
 
@@ -99,7 +99,7 @@ public class MD5andDES {
         // Returns a cipher object that implements the specified transformation
         Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
 
-        // Initializes cipher with public key 
+        // Initializes cipher with public key
         pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(PBESALT, 20));
 
         // Returns a string of the orignally encrypted data
